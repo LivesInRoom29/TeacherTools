@@ -9,3 +9,48 @@ datasource db {
 generator client {
   provider = "prisma-client-js"
 }
+
+model Class {
+  id           Int    @id @default(autoincrement())
+  name         String
+  block        String
+  schoolYear   String
+  instructor   User   @relation(fields: [instructorId], references: [id])
+  instructorId Int
+  students  Student[]
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String?
+  email     String?  @unique
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  classes   Class[]
+
+  @@map(name: "users")
+}
+
+model Student {
+  id      Int     @id @default(autoincrement())
+  name    String?
+  classes Class[]
+  participation Participation[]
+  comments ReportCardComment[]
+}
+
+model Participation {
+  id Int @id @default(autoincrement())
+  percentage Int
+  date DateTime
+  student Student @relation(fields: [studentId], references: [id])
+  studentId Int
+}
+
+model ReportCardComment {
+  id Int @id @default(autoincrement())
+  text String
+  date DateTime
+  student Student @relation(fields: [studentId], references: [id])
+  studentId Int
+}
