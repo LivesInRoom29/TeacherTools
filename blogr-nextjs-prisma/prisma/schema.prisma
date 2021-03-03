@@ -18,6 +18,7 @@ model Class {
   instructor   User   @relation(fields: [instructorId], references: [id])
   instructorId Int
   students  Student[]
+  active Boolean @default(true)
 }
 
 model User {
@@ -37,6 +38,7 @@ model Student {
   classes Class[]
   participation Participation[]
   comments ReportCardComment[]
+  active Boolean @default(true)
 }
 
 model Participation {
