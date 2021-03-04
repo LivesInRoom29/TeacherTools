@@ -4,17 +4,22 @@ import ReactMarkdown from "react-markdown"
 import Layout from "../../components/Layout"
 import { PostProps } from "../../components/Post"
 
+import prisma from "../../lib/prisma";
+
+// getServerSideProps (SSR) is used here because the data is dynamic
+// getStaticProps (SSG) could be used if data was not
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const post = {
-    id: 1,
-    title: "Prisma is the perfect ORM for Next.js",
-    content: "[Prisma](https://github.com/prisma/prisma) and Next.js go _great_ together!",
-    published: false,
-    author: {
-      name: "Nikolas Burk",
-      email: "burk@prisma.io",
+  const post = await prisma.post.findUnique({
+    where: {
+      id: Number(params?.id) || 1,
     },
-  }
+    include: {
+      author: {
+        select: { name: true },
+      },
+    },
+  });
+
   return {
     props: post,
   }
